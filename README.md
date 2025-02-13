@@ -1,44 +1,48 @@
 # Advanced LLM Telegram Bot
 
-Этот Telegram-бот для подготовки к экзаменам с интеграцией LangChain и Ollama для генерации ответов, конспектов, заданий и квизов. Бот включает дополнительные возможности, такие как:
-- **Документная обработка:** Принимает файлы (PDF, DOCX, TXT, JPEG, PNG) и извлекает из них текст.
-- **Генерация конспектов:** Создаёт краткий конспект материала и рекомендации для улучшения обучения.
-- **Генерация заданий:** Генерирует задание по загруженному материалу.
-- **Генерация квизов:** При выборе команды «Квиз» бот генерирует квиз-сессию из 10 вопросов. После исчерпания вопросов сеанс завершается, и для новой партии вопросов необходимо заново нажать кнопку «Квиз».
-- **Ответы на вопросы:** Любой текст, не совпадающий с командами, считается вопросом по материалу – бот генерирует ответ.
-- **Память:** Сохраняет загруженный материал и историю запросов как в оперативной памяти (через словарь `user_data`), так и в виде файлов.
-- **Callback-функциональность:** Inline-клавиатура для квиза (с кнопкой «Следующий квиз») позволяет переключаться между вопросами.
-- **Фильтрация:** При обнаружении запрещённых слов (например, «badword1») бот уведомляет администратора через Telegram.
+This Telegram bot is designed for exam preparation, integrating LangChain and Ollama to generate answers, summaries, tasks, and quizzes. The bot includes additional features such as:
 
-## Требования
+- **Document Processing:** Accepts files (PDF, DOCX, TXT, JPEG, PNG) and extracts text from them.
+- **Summary Generation:** Creates a brief summary of the material and provides recommendations for better learning.
+- **Task Generation:** Generates assignments based on the uploaded material.
+- **Quiz Generation:** When selecting the "Quiz" command, the bot generates a quiz session with 10 questions. Once the questions are exhausted, the session ends, and a new batch of questions requires pressing the "Quiz" button again.
+- **Answering Questions:** Any text that does not match commands is considered a question about the material, and the bot generates an answer.
+- **Memory:** Saves uploaded materials and query history both in RAM (via the `user_data` dictionary) and as files.
+- **Callback Functionality:** An inline keyboard for quizzes (with a "Next Quiz" button) allows switching between questions.
+- **Filtering:** If prohibited words (e.g., "badword1") are detected, the bot notifies the administrator via Telegram.
+
+## Requirements
 
 - Python 3.9+
-- Telegram Bot Token (получается через [BotFather](https://t.me/BotFather))
-- Telegram Admin Chat ID (для уведомлений)
+- Telegram Bot Token (obtained via [BotFather](https://t.me/BotFather))
+- Telegram Admin Chat ID (for notifications)
 
-## Установка
+## Installation
 
-1. **Клонируйте репозиторий:**
+1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/yourusername/advanced-llm-telegram-bot.git
    cd advanced-llm-telegram-bot
    ```
 
-2. **Создайте и активируйте виртуальное окружение:**
+2. **Create and activate a virtual environment:**
+
    ```bash
    python3 -m venv venv
-   source venv/bin/activate   # на Windows: venv\Scripts\activate
+   source venv/bin/activate   # on Windows: venv\Scripts\activate
    ```
 
-3. **Установите зависимости:**
+3. **Install dependencies:**
+
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Настройте переменные окружения:**
-   Либо отредактируйте файл `main.py`, заменив строки с `YOUR_TELEGRAM_BOT_TOKEN` и `YOUR_ADMIN_CHAT_ID` на реальные значения, либо создайте файл `.env`.
+4. **Set up environment variables:** Either edit the `main.py` file, replacing the lines with `YOUR_TELEGRAM_BOT_TOKEN` and `YOUR_ADMIN_CHAT_ID` with actual values, or create a `.env` file.
 
-5. **Установите Tesseract:**
+5. **Install Tesseract:**
+
    - **Ubuntu:**
      ```bash
      sudo apt update && sudo apt install tesseract-ocr
@@ -47,48 +51,51 @@
      ```bash
      brew install tesseract
      ```
-   - **Windows:**  
-     Скачайте и установите Tesseract с [официального репозитория](https://github.com/tesseract-ocr/tesseract).
+   - **Windows:**
+     Download and install Tesseract from the [official repository](https://github.com/tesseract-ocr/tesseract).
 
-## Запуск
+## Running the Bot
 
-Запустите бота командой:
+Start the bot with the following command:
+
 ```bash
 python main.py
 ```
 
-## Как работает бот
+## How the Bot Works
 
-1. **Старт:**  
-   Отправьте команду `/start` в Telegram. Бот пришлёт инструкцию и главное меню (reply-клавиатура).
+1. **Start:**
+   Send the `/start` command in Telegram. The bot will send instructions and display the main menu (reply keyboard).
 
-2. **Загрузка документа:**  
-   Отправьте документ (PDF, DOCX, TXT, JPEG, PNG). Бот извлечёт текст и сохранит его.
+2. **Uploading a Document:**
+   Send a document (PDF, DOCX, TXT, JPEG, PNG). The bot will extract and save the text.
 
-3. **Конспект:**  
-   Нажмите кнопку **Конспект** – бот сгенерирует краткий конспект материала и рекомендации, выводя их по частям.
+3. **Summary:**
+   Press the **Summary** button – the bot will generate a brief summary of the material along with recommendations, displaying them in parts.
 
-4. **Задача:**  
-   Нажмите кнопку **Задача** – бот сгенерирует задание по материалу.
+4. **Task:**
+   Press the **Task** button – the bot will generate an assignment based on the material.
 
-5. **Квиз:**  
-   - Нажмите кнопку **Квиз** – бот сгенерирует новую квиз-сессию из 10 вопросов и сохранит их.
-   - Первый вопрос будет отправлен как опрос (poll) с inline-клавиатурой.
-   - При нажатии кнопки **Следующий квиз** бот выдаст следующий вопрос из сохранённой сессии.
-   - После 10 вопросов квиз-сессия завершается.
+5. **Quiz:**
 
-6. **Задать вопрос:**  
-   Отправьте текст, не совпадающий с командами – бот считает его вопросом и выдаёт ответ, используя загруженный материал.
+   - Press the **Quiz** button – the bot will generate a new quiz session with 10 questions and save them.
+   - The first question will be sent as a poll with an inline keyboard.
+   - By pressing the **Next Quiz** button, the bot will provide the next question from the saved session.
+   - After 10 questions, the quiz session ends.
 
-7. **Материал:**  
-   Нажмите **Материал** – бот покажет инструкцию для загрузки документа.
+6. **Asking a Question:**
+   Send text that does not match any commands – the bot will treat it as a question and generate an answer using the uploaded material.
 
-8. **Стоп:**  
-   Нажмите **Стоп** для отмены текущей операции.
+7. **Material:**
+   Press **Material** – the bot will show instructions for uploading a document.
 
-## Возможные улучшения
+8. **Stop:**
+   Press **Stop** to cancel the current operation.
 
-- Интеграция с базой данных для долговременного хранения истории и материалов.
-- Расширение функционала цепочек LangChain для многошагового рассуждения.
-- Улучшение логирования и обработки ошибок.
-- Возможность переключения между локальным LLM и удалённым API вызовом для оптимизации скорости.
+## Possible Improvements
+
+- Integration with a database for long-term storage of history and materials.
+- Expanding LangChain chains functionality for multi-step reasoning.
+- Enhancing logging and error handling.
+- Allowing switching between a local LLM and a remote API call for speed optimization.
+
